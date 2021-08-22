@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/jdpadillaac/microservice-example/tree/main/users/internal"
+	"github.com/jdpadillaac/microservice-example/tree/main/users/src/infraestructure/mongo"
 	"github.com/jdpadillaac/microservice-example/tree/main/users/src/infraestructure/rest_api"
 	"github.com/joho/godotenv"
 	"log"
@@ -14,6 +15,6 @@ func main() {
 	}
 
 	appConfig := internal.NewAppConfig()
-
+	mdb.NewConfig().Start(appConfig)
 	restapi.Start(appConfig)
 }
