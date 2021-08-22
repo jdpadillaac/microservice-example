@@ -4,4 +4,5 @@ import "github.com/jdpadillaac/microservice-example/tree/main/users/src/domain/e
 
 type User interface {
 	Save(u entity.User) (string, error)
+	FindByID(ID string) (entity.User, error)
 }

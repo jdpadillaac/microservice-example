@@ -17,8 +17,9 @@ func UserHandler(r *gin.Engine, config *internal.AppConfig) {
 	fmt.Println(endpoint)
 	useCase := usecase.NewUserUc(mdb.NewUserRepo())
 	val := validator.New()
-
 	user := r.Group(endpoint)
+
+	//Register user
 	user.POST("", func(c *gin.Context) {
 		var model models.RqRegisterUser
 
@@ -44,5 +45,18 @@ func UserHandler(r *gin.Engine, config *internal.AppConfig) {
 		}
 
 		c.JSON(http.StatusCreated, newResponse("register ok", true))
+	})
+
+	//Get user by ID
+	user.GET("/:ID", func(c *gin.Context) {
+		id := c.Param("ID")
+
+		result, err := useCase.FindByID(id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, newResponse(err.Error(), false))
+			return
+		}
+
+		c.JSON(http.StatusOK, newResponse(result, true))
 	})
 }

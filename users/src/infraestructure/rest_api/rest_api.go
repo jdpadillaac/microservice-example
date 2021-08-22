@@ -6,8 +6,8 @@ import (
 )
 
 type response struct {
-	Success bool
-	Data    interface{}
+	Success bool        `json:"success"`
+	Data    interface{} `json:"data"`
 }
 
 func newResponse(data interface{}, success bool) *response {

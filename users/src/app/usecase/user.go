@@ -16,7 +16,6 @@ func NewUserUc(repo repository.User) *UserUc {
 }
 
 func (u UserUc) Save(doc models.RqRegisterUser) error {
-
 	newUser := entity.User{
 		Names:    doc.Names,
 		Email:    doc.Email,
@@ -30,4 +29,8 @@ func (u UserUc) Save(doc models.RqRegisterUser) error {
 	}
 
 	return nil
+}
+
+func (u UserUc) FindByID(ID string) (entity.User, error) {
+	return u.repo.FindByID(ID)
 }

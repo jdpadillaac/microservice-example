@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/jdpadillaac/microservice-example/tree/main/users/src/domain/entity"
 	"github.com/jdpadillaac/microservice-example/tree/main/users/src/domain/repository"
+	"github.com/pkg/errors"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -27,7 +29,6 @@ func NewUserRepo() repository.User {
 }
 
 func (u userRepo) Save(user entity.User) (string, error) {
-
 	newUser := userDbModel{
 		ID:       user.ID,
 		Names:    user.Names,
@@ -44,5 +45,30 @@ func (u userRepo) Save(user entity.User) (string, error) {
 	id := result.InsertedID.(primitive.ObjectID).Hex()
 
 	return id, nil
+}
 
+func (u userRepo) FindByID(ID string) (entity.User, error) {
+	var user entity.User
+	var model userDbModel
+
+	id, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return user, errors.Wrap(err, "Id enviado no válido")
+	}
+
+	filter := bson.M{"_id": id}
+	err = u.collection.FindOne(context.Background(), filter).Decode(&model)
+	if err != nil {
+		return user, err
+	}
+
+	user = entity.User{
+		ID:       model.ID,
+		Names:    model.Names,
+		Email:    model.Email,
+		Password: model.Password,
+		RolCode:  model.RolCode,
+	}
+
+	return user, nil
 }
